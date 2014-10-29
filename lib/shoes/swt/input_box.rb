@@ -45,6 +45,7 @@ class Shoes
       end
 
       private
+
       def nothing_changed?(event)
         source = event.source
         event.instance_of?(Java::OrgEclipseSwtEvents::ModifyEvent) &&
@@ -68,6 +69,5 @@ class Shoes
         super(dsl, parent, DEFAULT_STYLES)
       end
     end
-
   end
 end

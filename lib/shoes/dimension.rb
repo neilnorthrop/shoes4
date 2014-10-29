@@ -76,11 +76,11 @@ class Shoes
     end
 
     def absolute_start_position?
-      not @start.nil?
+      !@start.nil?
     end
 
     def absolute_end_position?
-      not @end.nil?
+      !@end.nil?
     end
 
     def absolute_position?
@@ -120,6 +120,7 @@ class Shoes
     end
 
     private
+
     def basic_start_value
       value = @start
       value = calculate_relative value if is_relative?(value)
@@ -156,7 +157,7 @@ class Shoes
     PERCENT_REGEX = /(-?\d+(\.\d+)*)%/
 
     def parse_from_string(result)
-      match = result.gsub(/\s+/, "").match(PERCENT_REGEX)
+      match = result.gsub(/\s+/, '').match(PERCENT_REGEX)
       if match
         match[1].to_f / 100.0
       elsif valid_integer_string?(result)
@@ -231,6 +232,7 @@ class Shoes
     end
 
     private
+
     def value_modified?(method)
       instance_variable = ('@' + method.to_s).to_sym
       instance_variable_get(instance_variable)

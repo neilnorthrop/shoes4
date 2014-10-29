@@ -15,7 +15,7 @@ class Shoes
         confirmed? answer_id
       end
 
-      def dialog_chooser title, folder=false
+      def dialog_chooser(title, folder = false)
         style = ::Swt::SWT::OPEN
         shell = ::Swt::Widgets::Shell.new Shoes.display
         fd = folder ? ::Swt::Widgets::DirectoryDialog.new(shell, style) : ::Swt::Widgets::FileDialog.new(shell, style)
@@ -23,11 +23,11 @@ class Shoes
         fd.open
       end
 
-      def ask msg, args
+      def ask(msg, args)
         Swt::AskDialog.new(::Swt::Widgets::Shell.new, msg, args).open
       end
 
-      def ask_color title
+      def ask_color(title)
         shell = ::Swt::Widgets::Shell.new Shoes.display
         cd = ::Swt::Widgets::ColorDialog.new shell
         cd.setText title
@@ -36,6 +36,7 @@ class Shoes
       end
 
       private
+
       def open_message_box(style, msg)
         shell = ::Swt::Widgets::Shell.new ::Swt.display
         @message_box = ::Swt::Widgets::MessageBox.new shell, style
@@ -49,8 +50,8 @@ class Shoes
     end
 
     class AskDialog < ::Swt::Widgets::Dialog
-      def initialize shell, msg, args
-        @shell, @msg, @args= shell, msg, args
+      def initialize(shell, msg, args)
+        @shell, @msg, @args = shell, msg, args
         super shell
       end
 
@@ -72,14 +73,14 @@ class Shoes
         b.setText 'OK'
         b.setLocation 180, 55
         b.pack
-        b.addSelectionListener{|e| @ret = text.getText; @shell.close}
+        b.addSelectionListener { |_e| @ret = text.getText; @shell.close }
         b = ::Swt::Widgets::Button.new @shell, ::Swt::SWT::NULL
         b.setText 'CANCEL'
         b.setLocation 222, 55
         b.pack
-        b.addSelectionListener{|e| @ret = nil; @shell.close}
+        b.addSelectionListener { |_e| @ret = nil; @shell.close }
         @shell.open
-        while !@shell.isDisposed do
+        until @shell.isDisposed
           display.sleep unless display.readAndDispatch
         end
         icon.dispose

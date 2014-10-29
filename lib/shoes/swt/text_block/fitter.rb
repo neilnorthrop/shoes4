@@ -97,7 +97,7 @@ class Shoes
 
         def fit_as_empty_first_layout(height)
           height += ::Shoes::Slot::NEXT_ELEMENT_OFFSET
-          generate_two_layouts(empty_segment, "", @dsl.text, height)
+          generate_two_layouts(empty_segment, '', @dsl.text, height)
         end
 
         def fit_as_centered(width, height)
@@ -108,7 +108,7 @@ class Shoes
             position_two_segments(
               empty_segment,
               CenteredTextSegment.new(@dsl, @dsl.containing_width),
-              "",
+              '',
               height)
           end
         end
@@ -181,7 +181,7 @@ class Shoes
 
         def empty_segment
           segment = generate_layout(1, @dsl.text)
-          segment.text = ""
+          segment.text = ''
           segment
         end
 
@@ -194,7 +194,7 @@ class Shoes
             height_so_far += layout.line_bounds(i).height
             break if height_so_far > height
 
-            ending_offset = offsets[i+1]
+            ending_offset = offsets[i + 1]
           end
           [layout.text[0...ending_offset], layout.text[ending_offset..-1]]
         end

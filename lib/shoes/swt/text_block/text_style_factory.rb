@@ -2,9 +2,9 @@ class Shoes
   module Swt
     class TextStyleFactory
       UNDERLINE_STYLES = {
-        "single" => 0,
-        "double" => 1,
-        "error" => 2,
+        'single' => 0,
+        'double' => 1,
+        'error' => 2
       }
 
       def initialize
@@ -47,12 +47,13 @@ class Shoes
       end
 
       private
+
       def set_rise(style)
         @gui_style.rise = style[:rise]
       end
 
       def set_underline(style)
-        @gui_style.underline = style[:underline].nil? || style[:underline] == "none" ? false : true
+        @gui_style.underline = style[:underline].nil? || style[:underline] == 'none' ? false : true
         @gui_style.underlineStyle = UNDERLINE_STYLES[style[:underline]]
       end
 
@@ -61,7 +62,7 @@ class Shoes
       end
 
       def set_strikethrough(style)
-        @gui_style.strikeout = style[:strikethrough].nil? || style[:strikethrough] == "none" ? false : true
+        @gui_style.strikeout = style[:strikethrough].nil? || style[:strikethrough] == 'none' ? false : true
       end
 
       def set_strikecolor(style)
@@ -74,7 +75,7 @@ class Shoes
       end
 
       def color_from_dsl(dsl_color, default = nil)
-        return nil if dsl_color.nil? and default.nil?
+        return nil if dsl_color.nil? && default.nil?
         return color_from_dsl default if dsl_color.nil?
         color = ::Swt::Color.new(Shoes.display, dsl_color.red, dsl_color.green, dsl_color.blue)
 

@@ -1,9 +1,8 @@
 class Shoes
   module Logger
     class << self
-
       def register(name, obj)
-        @loggers ||= { }
+        @loggers ||= {}
         @loggers[name] = obj
       end
 
@@ -24,13 +23,13 @@ class Shoes
             @log.clear do
               Shoes::LOG.each_with_index do |(typ, msg), index|
                 stack do
-                  background "#f1f5e1" if index % 2 == 0
+                  background '#f1f5e1' if index % 2 == 0
                   background rgb(220, 220, 220) if index % 2 != 0
-                  para typ, :stroke => blue
+                  para typ, stroke: blue
                   flow do
-                    stack :margin => 4 do
+                    stack margin: 4 do
                       s = msg.to_s
-                      para s, :margin => 4, :margin_top => 0
+                      para s, margin: 4, margin_top: 0
                     end
                   end
                 end
@@ -43,9 +42,9 @@ class Shoes
           flow do
             background black
             stack do
-              tagline "Shoes Console", stroke: white
+              tagline 'Shoes Console', stroke: white
             end
-            button "Clear", margin: 6, width: 80, height: 40, right: 10 do
+            button 'Clear', margin: 6, width: 80, height: 40, right: 10 do
               Shoes::LOG.clear
             end
           end
@@ -61,6 +60,6 @@ class Shoes
   end
 end
 
-Dir[File.join(File.dirname(__FILE__), "logger", "*.rb")].each { |logger|
+Dir[File.join(File.dirname(__FILE__), 'logger', '*.rb')].each do |logger|
   require logger
-}
+end

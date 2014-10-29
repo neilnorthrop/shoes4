@@ -1,12 +1,10 @@
 require 'strscan'
 
 module HH::Syntax
-
   # A single token extracted by a tokenizer. It is simply the lexeme
   # itself, decorated with a 'group' attribute to identify the type of the
   # lexeme.
   class Token < String
-
     # the type of the lexeme that was extracted.
     attr_reader :group
 
@@ -16,12 +14,11 @@ module HH::Syntax
 
     # Create a new Token representing the given text, and belonging to the
     # given group.
-    def initialize( text, group, instruction = :none )
+    def initialize(text, group, instruction = :none)
       super text
       @group = group
       @instruction = instruction
     end
-
   end
 
   # The base class of all tokenizers. It sets up the scanner and manages the
@@ -29,7 +26,6 @@ module HH::Syntax
   # methods to make sure adjacent tokens of identical groups are returned as
   # a single token.
   class Tokenizer
-
     # The current group being processed by the tokenizer
     attr_reader :group
 
@@ -39,11 +35,11 @@ module HH::Syntax
     # Start tokenizing. This sets up the state in preparation for tokenization,
     # such as creating a new scanner for the text and saving the callback block.
     # The block will be invoked for each token extracted.
-    def start( text, &block )
-      @chunk = ""
+    def start(text, &block)
+      @chunk = ''
       @group = :normal
       @callback = block
-      @text = StringScanner.new( text )
+      @text = StringScanner.new(text)
       setup
     end
 
@@ -67,12 +63,12 @@ module HH::Syntax
     # Subclasses must implement this method, which is called for each iteration
     # of the tokenization process. This method may extract multiple tokens.
     def step
-      raise NotImplementedError, "subclasses must implement #step"
+      fail NotImplementedError, 'subclasses must implement #step'
     end
 
     # Begins tokenizing the given text, calling #step until the text has been
     # exhausted.
-    def tokenize( text, &block )
+    def tokenize(text, &block)
       start text, &block
       step until @text.eos?
       finish
@@ -81,8 +77,8 @@ module HH::Syntax
     # Specify a set of tokenizer-specific options. Each tokenizer may (or may
     # not) publish any options, but if a tokenizer does those options may be
     # used to specify optional behavior.
-    def set( opts={} )
-      ( @options ||= Hash.new ).update opts
+    def set(opts = {})
+      (@options ||= {}).update opts
     end
 
     # Get the value of the specified option.
@@ -90,13 +86,13 @@ module HH::Syntax
       @options ? @options[opt] : nil
     end
 
-  private
+    private
 
     EOL = /(?=\r\n?|\n|$)/
 
     # A convenience for delegating method calls to the scanner.
-    def self.delegate( sym )
-      define_method( sym ) { |*a| @text.__send__( sym, *a ) }
+    def self.delegate(sym)
+      define_method(sym) { |*a| @text.__send__(sym, *a) }
     end
 
     delegate :bol?
@@ -117,7 +113,7 @@ module HH::Syntax
     end
 
     # Append the given data to the currently active chunk.
-    def append( data )
+    def append(data)
       @chunk << data
     end
 
@@ -128,70 +124,65 @@ module HH::Syntax
     #
     # After the new group is started, if +data+ is non-nil it will be appended
     # to the chunk.
-    def start_group( gr, data=nil )
+    def start_group(gr, data = nil)
       flush_chunk if gr != @group
       @group = gr
       @chunk << data if data
     end
 
-    def start_region( gr, data=nil )
+    def start_region(gr, data = nil)
       flush_chunk
       @group = gr
-      @callback.call( Token.new( data||"", @group, :region_open ) )
+      @callback.call(Token.new(data || '', @group, :region_open))
     end
 
-    def end_region( gr, data=nil )
+    def end_region(gr, data = nil)
       flush_chunk
       @group = gr
-      @callback.call( Token.new( data||"", @group, :region_close ) )
+      @callback.call(Token.new(data || '', @group, :region_close))
     end
 
     def flush_chunk
-      @callback.call( Token.new( @chunk, @group ) ) unless @chunk.empty?
-      @chunk = ""
+      @callback.call(Token.new(@chunk, @group)) unless @chunk.empty?
+      @chunk = ''
     end
 
-    def subtokenize( syntax, text )
-      tokenizer = Syntax.load( syntax )
+    def subtokenize(syntax, text)
+      tokenizer = Syntax.load(syntax)
       tokenizer.set @options if @options
       flush_chunk
-      tokenizer.tokenize( text, &@callback )
+      tokenizer.tokenize(text, &@callback)
     end
   end
-
 
   # A default tokenizer for handling syntaxes that are not explicitly handled
   # elsewhere. It simply yields the given text as a single token.
   class Default
-
     # Yield the given text as a single token.
-    def tokenize( text )
-      yield Token.new( text, :normal )
+    def tokenize(text)
+      yield Token.new(text, :normal)
     end
-
   end
 
   # A hash for registering syntax implementations.
-  SYNTAX = Hash.new( Default )
+  SYNTAX = Hash.new(Default)
 
   # Load the implementation of the requested syntax. If the syntax cannot be
   # found, or if it cannot be loaded for whatever reason, the Default syntax
   # handler will be returned.
-  def load( syntax )
+  def load(syntax)
     begin
       require_relative "lang/#{syntax}"
     rescue LoadError
     end
-    SYNTAX[ syntax ].new
+    SYNTAX[syntax].new
   end
   module_function :load
 
   # Return an array of the names of supported syntaxes.
   def all
-    lang_dir = File.join(File.dirname(__FILE__), "syntax", "lang")
-    Dir["#{lang_dir}/*.rb"].map { |path| File.basename(path, ".rb") }
+    lang_dir = File.join(File.dirname(__FILE__), 'syntax', 'lang')
+    Dir["#{lang_dir}/*.rb"].map { |path| File.basename(path, '.rb') }
   end
   module_function :all
-
-
 end
